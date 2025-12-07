@@ -33,100 +33,32 @@ pub inline fn countComments(css: []const u8) usize {
     return count;
 }
 
-/// Detect all line numbers that contain CSS comments
-pub inline fn detectLinesWithComments(allocator: Allocator, css: []const u8) ![]usize {
-    var lines: std.ArrayList(usize) = .{};
-    errdefer lines.deinit(allocator);
+/// Remove all CSS comments from the input text
+pub inline fn removeComments(allocator: Allocator, css: []const u8) ![]u8 {
+    var result: std.ArrayList(u8) = .{};
+    errdefer result.deinit(allocator);
 
     var pos: usize = 0;
 
     while (pos < css.len) {
         const start_opt = std.mem.indexOfPos(u8, css, pos, "/*");
-        if (start_opt == null) break;
-        const start = start_opt.?;
 
-        const end_opt = std.mem.indexOfPos(u8, css, start + 2, "*/");
-        if (end_opt == null) break;
-        const end = end_opt.?;
+        if (start_opt) |start| {
+            try result.appendSlice(allocator, css[pos..start]);
 
-        const start_line = getLineNumber(css, start);
-        const end_line = getLineNumber(css, end + 2);
-
-        var line = start_line;
-        while (line <= end_line) : (line += 1) {
-            // only if not in the list
-            if (lines.items.len == 0 or lines.items[lines.items.len - 1] != line) {
-                try lines.append(allocator, line);
+            const end_opt = std.mem.indexOfPos(u8, css, start + 2, "*/");
+            if (end_opt) |end| {
+                pos = end + 2;
+            } else {
+                break;
             }
+        } else {
+            try result.appendSlice(allocator, css[pos..]);
+            break;
         }
-
-        pos = end + 2;
     }
 
-    return lines.toOwnedSlice(allocator);
-}
-
-/// Get all CSS comments with their location information
-pub inline fn getAllComments(allocator: Allocator, css: []const u8) ![]Comment {
-    var comments: std.ArrayList(Comment) = .{};
-    errdefer {
-        for (comments.items) |comment| {
-            allocator.free(comment.content);
-        }
-        comments.deinit(allocator);
-    }
-
-    var pos: usize = 0;
-
-    while (pos < css.len) {
-        const start_opt = std.mem.indexOfPos(u8, css, pos, "/*");
-        if (start_opt == null) break;
-        const start = start_opt.?;
-
-        const end_opt = std.mem.indexOfPos(u8, css, start + 2, "*/");
-        if (end_opt == null) break;
-        const end = end_opt.?;
-
-        const comment_text = css[start .. end + 2];
-        const comment_copy = try allocator.dupe(u8, comment_text);
-
-        const line = getLineNumber(css, start);
-        const column = getColumnNumber(css, start);
-
-        try comments.append(allocator, Comment{
-            .start = start,
-            .end = end + 1, // Note: end + 1 to include the last '/'
-            .line = line,
-            .column = column,
-            .content = comment_copy,
-        });
-
-        pos = end + 2;
-    }
-
-    return comments.toOwnedSlice(allocator);
-}
-
-/// Helper function to calculate line number
-fn getLineNumber(text: []const u8, pos: usize) usize {
-    var line: usize = 1;
-    var i: usize = 0;
-    while (i < pos and i < text.len) : (i += 1) {
-        if (text[i] == '\n') line += 1;
-    }
-    return line;
-}
-
-/// Helper function to calculate column number
-fn getColumnNumber(text: []const u8, pos: usize) usize {
-    var column: usize = 1;
-    var i: usize = pos;
-    while (i > 0) {
-        i -= 1;
-        if (text[i] == '\n') break;
-        column += 1;
-    }
-    return column;
+    return result.toOwnedSlice(allocator);
 }
 
 test "countComments - no comments" {
@@ -182,166 +114,168 @@ test "countComments - comment before semicolon" {
     try std.testing.expectEqual(@as(usize, 1), count);
 }
 
-test "detectLinesWithComments - no comments" {
+test "removeComments - no comments" {
     const allocator = std.testing.allocator;
     const css = "body { color: red; }";
-    const lines = try detectLinesWithComments(allocator, css);
-    defer allocator.free(lines);
+    const result = try removeComments(allocator, css);
+    defer allocator.free(result);
 
-    try std.testing.expectEqual(@as(usize, 0), lines.len);
+    try std.testing.expectEqualStrings(css, result);
 }
 
-test "detectLinesWithComments - single line comment" {
+test "removeComments - single comment at start" {
     const allocator = std.testing.allocator;
-    const css =
-        \\body { color: red; }
-        \\/* comment on line 2 */
-        \\div { margin: 0; }
-    ;
-    const lines = try detectLinesWithComments(allocator, css);
-    defer allocator.free(lines);
+    const css = "/* header comment */body { color: red; }";
+    const result = try removeComments(allocator, css);
+    defer allocator.free(result);
 
-    try std.testing.expectEqual(@as(usize, 1), lines.len);
-    try std.testing.expectEqual(@as(usize, 2), lines[0]);
+    try std.testing.expectEqualStrings("body { color: red; }", result);
 }
 
-test "detectLinesWithComments - multiline comment" {
+test "removeComments - single comment at end" {
     const allocator = std.testing.allocator;
-    const css =
-        \\body { color: red; }
-        \\/* This comment
-        \\   spans multiple
-        \\   lines */
-        \\div { margin: 0; }
-    ;
-    const lines = try detectLinesWithComments(allocator, css);
-    defer allocator.free(lines);
+    const css = "body { color: red; }/* footer comment */";
+    const result = try removeComments(allocator, css);
+    defer allocator.free(result);
 
-    try std.testing.expectEqual(@as(usize, 3), lines.len);
-    try std.testing.expectEqual(@as(usize, 2), lines[0]);
-    try std.testing.expectEqual(@as(usize, 3), lines[1]);
-    try std.testing.expectEqual(@as(usize, 4), lines[2]);
+    try std.testing.expectEqualStrings("body { color: red; }", result);
 }
 
-test "detectLinesWithComments - multiple comments on different lines" {
-    const allocator = std.testing.allocator;
-    const css =
-        \\/* comment 1 */
-        \\body { color: red; }
-        \\/* comment 2 */
-        \\div { margin: 0; }
-    ;
-    const lines = try detectLinesWithComments(allocator, css);
-    defer allocator.free(lines);
-
-    try std.testing.expectEqual(@as(usize, 2), lines.len);
-    try std.testing.expectEqual(@as(usize, 1), lines[0]);
-    try std.testing.expectEqual(@as(usize, 3), lines[1]);
-}
-
-test "getAllComments - no comments" {
-    const allocator = std.testing.allocator;
-    const css = "body { color: red; }";
-    const comments = try getAllComments(allocator, css);
-    defer {
-        for (comments) |comment| {
-            allocator.free(comment.content);
-        }
-        allocator.free(comments);
-    }
-
-    try std.testing.expectEqual(@as(usize, 0), comments.len);
-}
-
-test "getAllComments - single comment" {
-    const allocator = std.testing.allocator;
-    const css = "/* test comment */ body {}";
-    const comments = try getAllComments(allocator, css);
-    defer {
-        for (comments) |comment| {
-            allocator.free(comment.content);
-        }
-        allocator.free(comments);
-    }
-
-    try std.testing.expectEqual(@as(usize, 1), comments.len);
-    try std.testing.expectEqualStrings("/* test comment */", comments[0].content);
-    try std.testing.expectEqual(@as(usize, 0), comments[0].start);
-    try std.testing.expectEqual(@as(usize, 17), comments[0].end);
-    try std.testing.expectEqual(@as(usize, 1), comments[0].line);
-    try std.testing.expectEqual(@as(usize, 1), comments[0].column);
-}
-
-test "getAllComments - multiple comments with positions" {
-    const allocator = std.testing.allocator;
-    const css =
-        \\/* comment 1 */
-        \\body { color: red; }
-        \\/* comment 2 */
-    ;
-    const comments = try getAllComments(allocator, css);
-    defer {
-        for (comments) |comment| {
-            allocator.free(comment.content);
-        }
-        allocator.free(comments);
-    }
-
-    try std.testing.expectEqual(@as(usize, 2), comments.len);
-
-    // First comment
-    try std.testing.expectEqualStrings("/* comment 1 */", comments[0].content);
-    try std.testing.expectEqual(@as(usize, 1), comments[0].line);
-    try std.testing.expectEqual(@as(usize, 1), comments[0].column);
-
-    // Second comment
-    try std.testing.expectEqualStrings("/* comment 2 */", comments[1].content);
-    try std.testing.expectEqual(@as(usize, 3), comments[1].line);
-    try std.testing.expectEqual(@as(usize, 1), comments[1].column);
-}
-
-test "getAllComments - comment with column offset" {
+test "removeComments - single comment in middle" {
     const allocator = std.testing.allocator;
     const css = "body { /* inline comment */ color: red; }";
-    const comments = try getAllComments(allocator, css);
-    defer {
-        for (comments) |comment| {
-            allocator.free(comment.content);
-        }
-        allocator.free(comments);
-    }
+    const result = try removeComments(allocator, css);
+    defer allocator.free(result);
 
-    try std.testing.expectEqual(@as(usize, 1), comments.len);
-    try std.testing.expectEqualStrings("/* inline comment */", comments[0].content);
-    try std.testing.expectEqual(@as(usize, 1), comments[0].line);
-    try std.testing.expectEqual(@as(usize, 8), comments[0].column);
+    try std.testing.expectEqualStrings("body {  color: red; }", result);
 }
 
-test "getLineNumber - first line" {
-    const text = "hello world";
-    try std.testing.expectEqual(@as(usize, 1), getLineNumber(text, 0));
-    try std.testing.expectEqual(@as(usize, 1), getLineNumber(text, 5));
+test "removeComments - multiple comments" {
+    const allocator = std.testing.allocator;
+    const css =
+        \\/* comment 1 */
+        \\body { color: red; }
+        \\/* comment 2 */
+        \\div { margin: 0; }
+        \\/* comment 3 */
+    ;
+    const expected =
+        \\
+        \\body { color: red; }
+        \\
+        \\div { margin: 0; }
+        \\
+    ;
+    const result = try removeComments(allocator, css);
+    defer allocator.free(result);
+
+    try std.testing.expectEqualStrings(expected, result);
 }
 
-test "getLineNumber - multiple lines" {
-    const text = "line 1\nline 2\nline 3";
-    try std.testing.expectEqual(@as(usize, 1), getLineNumber(text, 0));
-    try std.testing.expectEqual(@as(usize, 2), getLineNumber(text, 7));
-    try std.testing.expectEqual(@as(usize, 3), getLineNumber(text, 14));
+test "removeComments - adjacent comments" {
+    const allocator = std.testing.allocator;
+    const css = "/* comment 1 *//* comment 2 *//* comment 3 */body {}";
+    const result = try removeComments(allocator, css);
+    defer allocator.free(result);
+
+    try std.testing.expectEqualStrings("body {}", result);
 }
 
-test "getColumnNumber - first position" {
-    const text = "hello world";
-    try std.testing.expectEqual(@as(usize, 1), getColumnNumber(text, 0));
+test "removeComments - multiline comment" {
+    const allocator = std.testing.allocator;
+    const css =
+        \\/* This is a
+        \\   multiline
+        \\   comment */
+        \\body { color: red; }
+    ;
+    const expected =
+        \\
+        \\body { color: red; }
+    ;
+    const result = try removeComments(allocator, css);
+    defer allocator.free(result);
+
+    try std.testing.expectEqualStrings(expected, result);
 }
 
-test "getColumnNumber - middle of line" {
-    const text = "hello world";
-    try std.testing.expectEqual(@as(usize, 7), getColumnNumber(text, 6));
+test "removeComments - comment with special characters" {
+    const allocator = std.testing.allocator;
+    const css = "/* Comment with / and * inside */ body {}";
+    const result = try removeComments(allocator, css);
+    defer allocator.free(result);
+
+    try std.testing.expectEqualStrings(" body {}", result);
 }
 
-test "getColumnNumber - after newline" {
-    const text = "line 1\nline 2";
-    try std.testing.expectEqual(@as(usize, 1), getColumnNumber(text, 7));
-    try std.testing.expectEqual(@as(usize, 3), getColumnNumber(text, 9));
+test "removeComments - preserves content between comments" {
+    const allocator = std.testing.allocator;
+    const css = "a/* c1 */b/* c2 */c/* c3 */d";
+    const result = try removeComments(allocator, css);
+    defer allocator.free(result);
+
+    try std.testing.expectEqualStrings("abcd", result);
+}
+
+test "removeComments - real world example" {
+    const allocator = std.testing.allocator;
+    const css =
+        \\/* Open Sans Font */
+        \\@font-face {
+        \\  font-family: 'Open Sans';
+        \\  /* This is a comment inside */
+        \\  src: url('../fonts/open-sans.woff2') format('woff2');
+        \\}
+        \\/* End of file */
+    ;
+    const expected =
+        \\
+        \\@font-face {
+        \\  font-family: 'Open Sans';
+        \\
+        \\  src: url('../fonts/open-sans.woff2') format('woff2');
+        \\}
+        \\
+    ;
+    const result = try removeComments(allocator, css);
+    defer allocator.free(result);
+
+    try std.testing.expectEqualStrings(expected, result);
+}
+
+test "removeComments - unclosed comment" {
+    const allocator = std.testing.allocator;
+    const css = "body { color: red; } /* unclosed comment";
+    const result = try removeComments(allocator, css);
+    defer allocator.free(result);
+
+    try std.testing.expectEqualStrings("body { color: red; } ", result);
+}
+
+test "removeComments - empty input" {
+    const allocator = std.testing.allocator;
+    const css = "";
+    const result = try removeComments(allocator, css);
+    defer allocator.free(result);
+
+    try std.testing.expectEqualStrings("", result);
+}
+
+test "removeComments - only comment" {
+    const allocator = std.testing.allocator;
+    const css = "/* just a comment */";
+    const result = try removeComments(allocator, css);
+    defer allocator.free(result);
+
+    try std.testing.expectEqualStrings("", result);
+}
+
+test "removeComments - comment before semicolon" {
+    const allocator = std.testing.allocator;
+    const css = "content: var(--bs-breadcrumb-div, " / ") /* rtl: var(--bs-breadcrumb-div, " / ") */;";
+    const expected = "content: var(--bs-breadcrumb-div, " / ") ;";
+    const result = try removeComments(allocator, css);
+    defer allocator.free(result);
+
+    try std.testing.expectEqualStrings(expected, result);
 }
