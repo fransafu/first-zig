@@ -1,41 +1,46 @@
 const std = @import("std");
-const Regex = @import("regex").Regex;
+const css_comment_parser = @import("css_comment_parser.zig");
+const css_parser = @import("css_parser.zig");
 
 pub fn main() !void {
-    const allocator = std.heap.page_allocator;
-    const filepath = "css-samples/fasteater_usd8docs_docs_css_chrome.css";
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+
+    const filepath = "css-samples/sample_1.css";
 
     const file = try std.fs.cwd().openFile(filepath, .{ .mode = .read_only });
     defer file.close();
 
-    // read all file into memory (max 1 MiB here)
     const css = try file.readToEndAlloc(allocator, 1024 * 1024);
     defer allocator.free(css);
 
-    const pattern = "/\\*(.|\\n)*?\\*/";
+    // 1. Handle Comments (TODO: for a future versions the comments will be parsed and stored in the AST)
+    const has_comments = css_comment_parser.countComments(css) > 0;
+    const cleaned_css = if (has_comments)
+        try css_comment_parser.removeComments(allocator, css)
+    else
+        css;
+    defer if (has_comments) allocator.free(cleaned_css);
 
-    var re = try Regex.compile(allocator, pattern);
-    defer re.deinit();
+    // 2. Parse CSS
+    var parser = css_parser.CssParser.init(allocator, cleaned_css);
+    var ast = try parser.parse();
+    defer ast.deinit(allocator);
 
-    var pos: usize = 0;
-    while (pos < css.len) {
-        const remaining = css[pos..];
-        var caps = try re.captures(remaining);
+    // 3. Write JSON
+    const out_file = try std.fs.cwd().createFile("output.json", .{});
+    defer out_file.close();
 
-        if (caps) |*c| {
-            defer c.deinit();
-            if (c.sliceAt(0)) |match| {
-                std.debug.print("{s}\n---\n", .{match});
-                if (c.boundsAt(0)) |bounds| {
-                    pos += bounds.upper;
-                } else {
-                    break;
-                }
-            } else {
-                break;
-            }
-        } else {
-            break;
-        }
-    }
+    var buf: [4096]u8 = undefined;
+    var file_writer = out_file.writer(&buf);
+
+    try std.json.Stringify.value(
+        ast,
+        .{ .whitespace = .indent_2 },
+        &file_writer.interface,
+    );
+    try file_writer.interface.flush();
+
+    std.debug.print("AST written to output.json\n", .{});
 }

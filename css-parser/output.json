@@ -1,0 +1,982 @@
+{
+  "type": "stylesheet",
+  "rules": [
+    {
+      "rule": {
+        "selector": "@font-face",
+        "declarations": [
+          {
+            "property": "font-family",
+            "value": "'Font'"
+          },
+          {
+            "property": "src",
+            "value": "local('Font-Bold'),\n        url('../fonts/font.woff2') format('woff2'),\n        url('../fonts/font.woff') format('woff'),\n        url('../fonts/font.ttf') format('truetype')"
+          },
+          {
+            "property": "font-weight",
+            "value": "700"
+          },
+          {
+            "property": "font-style",
+            "value": "normal"
+          },
+          {
+            "property": "font-display",
+            "value": "swap"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": ":root",
+        "declarations": [
+          {
+            "property": "--base-10",
+            "value": "oklch(100%, 0, 0)"
+          },
+          {
+            "property": "--base-9",
+            "value": "oklch(99.5% 0.01 var(--hue))"
+          },
+          {
+            "property": "--base-8",
+            "value": "oklch(97% 0.03 var(--hue))"
+          },
+          {
+            "property": "--base-7",
+            "value": "oklch(90% 0.06 var(--hue))"
+          },
+          {
+            "property": "--base-6",
+            "value": "oklch(75% 0.10 var(--hue))"
+          },
+          {
+            "property": "--base-5",
+            "value": "oklch(60% 0.25 var(--hue))"
+          },
+          {
+            "property": "--base-4",
+            "value": "oklch(40% 0.15 var(--hue))"
+          },
+          {
+            "property": "--base-3",
+            "value": "oklch(30% 0.15 var(--hue))"
+          },
+          {
+            "property": "--base-2",
+            "value": "oklch(20% 0.13 var(--hue))"
+          },
+          {
+            "property": "--base-1",
+            "value": "oklch(10% 0.10 var(--hue))"
+          },
+          {
+            "property": "--base-0",
+            "value": "oklch(0, 0, 0)"
+          },
+          {
+            "property": "font-family",
+            "value": "Monaco, Menlo, Consolas, \"Courier New\", Courier, monospace"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "@font-face",
+        "declarations": [
+          {
+            "property": "font-family",
+            "value": "'Open Sans'"
+          },
+          {
+            "property": "font-style",
+            "value": "italic"
+          },
+          {
+            "property": "font-weight",
+            "value": "300"
+          },
+          {
+            "property": "src",
+            "value": "local('Open Sans Light Italic'), local('OpenSans-LightItalic'),\n        url('../fonts/font.woff2') format('woff2')"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "@font-face",
+        "declarations": [
+          {
+            "property": "font-family",
+            "value": "'Open Sans'"
+          },
+          {
+            "property": "font-style",
+            "value": "normal"
+          },
+          {
+            "property": "font-weight",
+            "value": "400"
+          },
+          {
+            "property": "src",
+            "value": "local('Open Sans Regular'), local('OpenSans-Regular'),\n        url('../fonts/font.woff2') format('woff2')"
+          }
+        ]
+      }
+    },
+    {
+      "page": {
+        "rules": [
+          {
+            "rule": {
+              "selector": "@top-center",
+              "declarations": [
+                {
+                  "property": "font-size",
+                  "value": "0.8em"
+                },
+                {
+                  "property": "font-weight",
+                  "value": "600"
+                },
+                {
+                  "property": "color",
+                  "value": "var(--base-2)"
+                },
+                {
+                  "property": "letter-spacing",
+                  "value": "0.5px"
+                }
+              ]
+            }
+          },
+          {
+            "rule": {
+              "selector": "@bottom-center",
+              "declarations": [
+                {
+                  "property": "content",
+                  "value": "counter(page) \" / \" counter(pages)"
+                },
+                {
+                  "property": "font-size",
+                  "value": "9pt"
+                },
+                {
+                  "property": "color",
+                  "value": "var(--base-2)"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "body",
+        "declarations": [
+          {
+            "property": "margin",
+            "value": "0 auto 5em auto"
+          },
+          {
+            "property": "width",
+            "value": "clamp(420px, 70%, 1000px)"
+          },
+          {
+            "property": "line-height",
+            "value": "1.35"
+          },
+          {
+            "property": "hyphens",
+            "value": "auto"
+          },
+          {
+            "property": "overflow-wrap",
+            "value": "break-word"
+          },
+          {
+            "property": "word-break",
+            "value": "normal"
+          },
+          {
+            "property": "hyphens",
+            "value": "auto"
+          },
+          {
+            "property": "font-size",
+            "value": "0.9em"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "p",
+        "declarations": [
+          {
+            "property": "margin",
+            "value": "0 0 1em 0"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "a",
+        "declarations": [
+          {
+            "property": "color",
+            "value": "var(--base-5)"
+          },
+          {
+            "property": "text-decoration",
+            "value": "none"
+          },
+          {
+            "property": "font-weight",
+            "value": "600"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "a:hover",
+        "declarations": [
+          {
+            "property": "text-decoration",
+            "value": "underline"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "a[href^=\"http\"]::after",
+        "declarations": [
+          {
+            "property": "content",
+            "value": "\" <\" attr(href) \">\""
+          },
+          {
+            "property": "font-size",
+            "value": "80%"
+          },
+          {
+            "property": "color",
+            "value": "var(--base-6)"
+          },
+          {
+            "property": "word-break",
+            "value": "break-all"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "h1 a, h2 a",
+        "declarations": [
+          {
+            "property": "color",
+            "value": "var(--base-5)"
+          },
+          {
+            "property": "margin",
+            "value": "1em 0 0.4em 0"
+          },
+          {
+            "property": "font-weight",
+            "value": "600"
+          },
+          {
+            "property": "page-break-after",
+            "value": "avoid"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "h1, h2, h3, h4, h5, h6",
+        "declarations": [
+          {
+            "property": "color",
+            "value": "var(--base-5)"
+          },
+          {
+            "property": "margin",
+            "value": "1em 0 0.4em 0"
+          },
+          {
+            "property": "font-weight",
+            "value": "600"
+          },
+          {
+            "property": "page-break-after",
+            "value": "avoid"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "h1",
+        "declarations": [
+          {
+            "property": "padding-bottom",
+            "value": "0.5em"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "hr",
+        "declarations": [
+          {
+            "property": "border",
+            "value": "0"
+          },
+          {
+            "property": "height",
+            "value": "0"
+          },
+          {
+            "property": "margin",
+            "value": "0"
+          },
+          {
+            "property": "padding",
+            "value": "0"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "code.jjkd, code.jjkd *",
+        "declarations": [
+          {
+            "property": "background",
+            "value": "transparent !important"
+          },
+          {
+            "property": "font-family",
+            "value": "inherit !important"
+          },
+          {
+            "property": "font-size",
+            "value": "inherit !important"
+          },
+          {
+            "property": "border",
+            "value": "none !important"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "pre, code.sb-code",
+        "declarations": [
+          {
+            "property": "background",
+            "value": "var(--base-8)"
+          },
+          {
+            "property": "border",
+            "value": "1px solid var(--base-6e)"
+          },
+          {
+            "property": "font-family",
+            "value": "Monaco, \"JetBrains Mono\", monospace"
+          },
+          {
+            "property": "white-space",
+            "value": "pre-wrap"
+          },
+          {
+            "property": "overflow-wrap",
+            "value": "break-word"
+          },
+          {
+            "property": "word-break",
+            "value": "auto-phrase"
+          },
+          {
+            "property": "padding",
+            "value": "0.35em 0.5em"
+          },
+          {
+            "property": "border-radius",
+            "value": "5px"
+          },
+          {
+            "property": "font-size",
+            "value": "0.70em"
+          },
+          {
+            "property": "max-width",
+            "value": "100%"
+          },
+          {
+            "property": "overflow-x",
+            "value": "hidden"
+          },
+          {
+            "property": "position",
+            "value": "relative"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "pre[data-lang]::before",
+        "declarations": [
+          {
+            "property": "content",
+            "value": "attr(data-lang)"
+          },
+          {
+            "property": "position",
+            "value": "absolute"
+          },
+          {
+            "property": "top",
+            "value": "0.3em"
+          },
+          {
+            "property": "right",
+            "value": "0.3em"
+          },
+          {
+            "property": "font-size",
+            "value": "0.9em"
+          },
+          {
+            "property": "text-transform",
+            "value": "uppercase"
+          },
+          {
+            "property": "letter-spacing",
+            "value": "0.5px"
+          },
+          {
+            "property": "background",
+            "value": "var(--base-7)"
+          },
+          {
+            "property": "padding",
+            "value": "0.2em 0.5em"
+          },
+          {
+            "property": "border-radius",
+            "value": "5px"
+          },
+          {
+            "property": "color",
+            "value": "var(--base-1)"
+          },
+          {
+            "property": "opacity",
+            "value": "0.9"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "pre>code",
+        "declarations": [
+          {
+            "property": "background",
+            "value": "none"
+          },
+          {
+            "property": "border",
+            "value": "none"
+          },
+          {
+            "property": "font-family",
+            "value": "inherit"
+          },
+          {
+            "property": "font-size",
+            "value": "inherit"
+          },
+          {
+            "property": "white-space",
+            "value": "inherit"
+          },
+          {
+            "property": "overflow",
+            "value": "inherit"
+          },
+          {
+            "property": "padding",
+            "value": "0"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "table",
+        "declarations": [
+          {
+            "property": "width",
+            "value": "100%"
+          },
+          {
+            "property": "font-size",
+            "value": "80%"
+          },
+          {
+            "property": "border-collapse",
+            "value": "collapse"
+          },
+          {
+            "property": "page-break-inside",
+            "value": "auto"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "table th, table td",
+        "declarations": [
+          {
+            "property": "border",
+            "value": "1px solid var(--base-1)"
+          },
+          {
+            "property": "padding",
+            "value": "0.15rem 0.5rem"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "thead",
+        "declarations": [
+          {
+            "property": "background",
+            "value": "var(--base-8)"
+          },
+          {
+            "property": "font-weight",
+            "value": "600"
+          },
+          {
+            "property": "page-break-inside",
+            "value": "avoid"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "tbody tr:nth-child(even)",
+        "declarations": [
+          {
+            "property": "background",
+            "value": "var(--base-9)"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "tbody tr:nth-child(odd)",
+        "declarations": [
+          {
+            "property": "background",
+            "value": "var(--base-10)"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "figure",
+        "declarations": [
+          {
+            "property": "display",
+            "value": "block"
+          },
+          {
+            "property": "text-align",
+            "value": "center"
+          },
+          {
+            "property": "page-break-inside",
+            "value": "avoid"
+          }
+        ]
+      }
+    },
+    {
+      "media": {
+        "query": "print",
+        "rules": [
+          {
+            "rule": {
+              "selector": "body",
+              "declarations": [
+                {
+                  "property": "width",
+                  "value": "100% !important"
+                },
+                {
+                  "property": "margin",
+                  "value": "0 !important"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": ".sidebar",
+        "declarations": [
+          {
+            "property": "background-image",
+            "value": "linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%)"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "table.isWidget",
+        "declarations": [
+          {
+            "property": "display",
+            "value": "none"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": ".sb-hashtag[data-tag-name^=\"t\"], .sb-hashtag[data-tag-name=\"silver\"], .sb-hashtag[data-tag-name=\"burgundy\"], .sb-hashtag[data-tag-name=\"maroon\"], .sb-hashtag[data-tag-name=\"hazel\"], .sb-hashtag[data-tag-name=\"mint\"], .sb-hashtag[data-tag-name=\"sea\"], .sb-hashtag[data-tag-name=\"grape\"], .sb-hashtag[data-tag-name=\"wine\"]",
+        "declarations": [
+          {
+            "property": "display",
+            "value": "none !important"
+          }
+        ]
+      }
+    },
+    {
+      "media": {
+        "query": "(min-width: 641px)",
+        "rules": [
+          {
+            "rule": {
+              "selector": ".page",
+              "declarations": [
+                {
+                  "property": "flex-direction",
+                  "value": "row"
+                }
+              ]
+            }
+          },
+          {
+            "rule": {
+              "selector": ".sidebar",
+              "declarations": [
+                {
+                  "property": "width",
+                  "value": "250px"
+                },
+                {
+                  "property": "height",
+                  "value": "100vh"
+                },
+                {
+                  "property": "position",
+                  "value": "sticky"
+                },
+                {
+                  "property": "top",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          {
+            "rule": {
+              "selector": ".top-row",
+              "declarations": [
+                {
+                  "property": "position",
+                  "value": "sticky"
+                },
+                {
+                  "property": "top",
+                  "value": "0"
+                },
+                {
+                  "property": "z-index",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          {
+            "rule": {
+              "selector": ".top-row.auth ::deep a:first-child",
+              "declarations": [
+                {
+                  "property": "flex",
+                  "value": "1"
+                },
+                {
+                  "property": "text-align",
+                  "value": "right"
+                },
+                {
+                  "property": "width",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          {
+            "rule": {
+              "selector": ".top-row, article",
+              "declarations": [
+                {
+                  "property": "padding-left",
+                  "value": "2rem !important"
+                },
+                {
+                  "property": "padding-right",
+                  "value": "1.5rem !important"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "#blazor-error-ui",
+        "declarations": [
+          {
+            "property": "color-scheme",
+            "value": "light only"
+          },
+          {
+            "property": "background",
+            "value": "lightyellow"
+          },
+          {
+            "property": "bottom",
+            "value": "0"
+          },
+          {
+            "property": "box-shadow",
+            "value": "0 -1px 2px rgba(0, 0, 0, 0.2)"
+          },
+          {
+            "property": "box-sizing",
+            "value": "border-box"
+          },
+          {
+            "property": "display",
+            "value": "none"
+          },
+          {
+            "property": "left",
+            "value": "0"
+          },
+          {
+            "property": "padding",
+            "value": "0.6rem 1.25rem 0.7rem 1.25rem"
+          },
+          {
+            "property": "position",
+            "value": "fixed"
+          },
+          {
+            "property": "width",
+            "value": "100%"
+          },
+          {
+            "property": "z-index",
+            "value": "1000"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": ".loading-progress-text",
+        "declarations": [
+          {
+            "property": "position",
+            "value": "absolute"
+          },
+          {
+            "property": "text-align",
+            "value": "center"
+          },
+          {
+            "property": "font-weight",
+            "value": "bold"
+          },
+          {
+            "property": "inset",
+            "value": "calc(20vh + 3.25rem) 0 auto 0.2rem"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": ".loading-progress-text:after",
+        "declarations": [
+          {
+            "property": "content",
+            "value": "var(--blazor-load-percentage-text, \"Loading\")"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "code",
+        "declarations": [
+          {
+            "property": "color",
+            "value": "#c02d76"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": ".water",
+        "declarations": [
+          {
+            "property": "fill",
+            "value": "#0e1e41 !important"
+          },
+          {
+            "property": "stroke",
+            "value": "#0e1e41 !important"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "#CAT",
+        "declarations": [
+          {
+            "property": "color",
+            "value": "#dddddd"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "#CATWrapper",
+        "declarations": [
+          {
+            "property": "background-color",
+            "value": "#000000"
+          },
+          {
+            "property": "border-bottom",
+            "value": "1px solid #111111"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "g.q:hover:not(.answered) circle.city",
+        "declarations": [
+          {
+            "property": "stroke",
+            "value": "#7c1c56"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "g.q:hover:not(.answered) ellipse.city",
+        "declarations": [
+          {
+            "property": "stroke",
+            "value": "#7c1c56"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "g.q:hover:not(.answered) ellipse.city1",
+        "declarations": [
+          {
+            "property": "stroke",
+            "value": "#7c1c56"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": "g.q:hover:not(.answered) circle.city1",
+        "declarations": [
+          {
+            "property": "stroke",
+            "value": "#7c1c56"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": ".landarea",
+        "declarations": [
+          {
+            "property": "stroke",
+            "value": "#135139 !important"
+          }
+        ]
+      }
+    },
+    {
+      "rule": {
+        "selector": ".btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus",
+        "declarations": [
+          {
+            "property": "box-shadow",
+            "value": "0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb"
+          }
+        ]
+      }
+    }
+  ]
+}
